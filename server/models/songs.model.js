@@ -1,10 +1,10 @@
 const Pool = require("pg").Pool;
 const pool = new Pool({
-  user: "agent1",
-  host: "localhost",
+  user: "postgres",
+  host: "postgresdb",
   database: "melochord",
   password: "123",
-  port: 5432,
+  port: 5432
 });
 //get all songs from the database
 const getSongs = async () => {
@@ -26,7 +26,7 @@ const getSongs = async () => {
     throw new Error("Internal server error");
   }
 };
-//create a new song record in the databsse
+//create a new song record in the database
 const createSong = (body) => {
   return new Promise(function (resolve, reject) {
     

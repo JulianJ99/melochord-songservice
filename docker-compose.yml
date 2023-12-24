@@ -1,0 +1,58 @@
+# Use postgres/example user/password credentials
+version: '3.8'
+
+services:
+  postgresdb:
+    image: postgres
+    restart: always
+    hostname: localhost
+    ports:
+      - 5432:5432    
+    env_file: ./.env
+    container_name: postgresdb
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: '123'
+      POSTGRES_DB: melochord
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - postgresbackend
+      
+  songservice:
+    depends_on:
+      - postgresdb
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    container_name: songservice
+    restart: on-failure
+    env_file: ./.env
+    volumes:
+      - ./server:/server
+    ports:
+      - 3002:3002
+    environment:
+      - DB_HOST='localhost'
+      - DB_USER='agent1'
+      - DB_PASS='123'
+      - DB_NAME='melochord'
+      - DB_DIALECT='postgres'
+      - PORT=3002
+    extra_hosts:
+      - localhost:127.0.0.1
+      - host.docker.internal:172.17.0.1
+    networks:
+      - postgresbackend
+      - frontend
+
+volumes:
+  server:
+  pgdata:
+
+networks:
+  postgresbackend:
+  frontend:
+    name: frontend
+    external: true      
