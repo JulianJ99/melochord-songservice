@@ -15,13 +15,16 @@ CREATE DATABASE melochord
     IS_TEMPLATE = False;
 
 GRANT ALL PRIVILEGES ON DATABASE melochord TO postgres;
+
+CREATE SEQUENCE songs_id_seq START 1;
+
 -- Table: public.songs
 
-DROP TABLE IF EXISTS public.songs;
+-- DROP TABLE IF EXISTS public.songs;
 
 CREATE TABLE IF NOT EXISTS public.songs
 (
-    id integer NOT NULL,
+    id integer NOT NULL DEFAULT nextval('songs_id_seq'::regclass),
     title character varying(50) COLLATE pg_catalog."default" NOT NULL,
     artist character varying(50) COLLATE pg_catalog."default" NOT NULL,
     album character varying(50) COLLATE pg_catalog."default" NOT NULL,
